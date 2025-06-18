@@ -1,0 +1,5 @@
+cognitive-complexity-threshold = 30
+too-many-arguments-threshold = 7
+type-complexity-threshold = 100
+single-char-lifetime-names = true
+trivial-copy-size-limit = 256

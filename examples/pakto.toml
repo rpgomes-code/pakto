@@ -1,0 +1,90 @@
+# Example Pakto configuration file
+
+[npm]
+# NPM registry URL
+registry = "https://registry.npmjs.org"
+
+# Request timeout in seconds
+timeout = 30
+
+# User agent for NPM requests
+user_agent = "pakto/0.1.0"
+
+# Auth token for private registries (optional)
+# auth_token = "your-token-here"
+
+[output]
+# Default output directory
+directory = "./dist"
+
+# Naming pattern for generated files
+# Available variables: {name}, {package}, {version}
+naming_pattern = "{name}-outsystems.js"
+
+# Enable minification by default
+minify = true
+
+# Default ECMAScript target
+target = "es5"
+
+# Include source maps
+source_maps = false
+
+[polyfills]
+# Directory for custom polyfills (optional)
+# custom_dir = "./custom-polyfills"
+
+# Polyfills to include by default
+default_includes = [
+    "buffer",
+    "crypto",
+    "events",
+    "process"
+]
+
+# Polyfills to exclude by default
+default_excludes = [
+    "fs",
+    "child_process",
+    "cluster",
+    "os"
+]
+
+[polyfills.mappings]
+# Custom polyfill mappings
+# "custom-module" = "path/to/polyfill.js"
+
+[bundle]
+# Default bundling strategy
+strategy = "inline"
+
+# Maximum bundle size in bytes (5MB)
+max_size = 5242880
+
+# Dependencies to exclude from bundling
+exclude_dependencies = [
+    "fsevents",
+    "node-gyp",
+    "@types/*"
+]
+
+# Dependencies to force inline
+force_inline = []
+
+[cache]
+# Cache directory
+directory = "./.cache/pakto"
+
+# Cache TTL in seconds (24 hours)
+ttl = 86400
+
+# Enable caching
+enabled = true
+
+[templates]
+# Custom template directory (optional)
+# directory = "./templates"
+
+# Template overrides
+[templates.overrides]
+# "iife" = "path/to/custom-iife-template.hbs"
