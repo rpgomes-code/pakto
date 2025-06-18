@@ -1,0 +1,33 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage
+lcov.info
+coverage/
+
+# Cache
+.cache/
+
+# Output
+dist/
+*.outsystems.js
+
+# Config
+pakto.toml
+!examples/pakto.toml
