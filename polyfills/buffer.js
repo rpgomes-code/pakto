@@ -82,6 +82,29 @@
         return obj instanceof Uint8Array;
     };
 
+    BufferPolyfill.concat = function(list, totalLength) {
+        if (!Array.isArray(list)) {
+            throw new TypeError('list argument must be an Array');
+        }
+
+        if (totalLength === undefined) {
+            totalLength = list.reduce(function(sum, buf) {
+                return sum + buf.length;
+            }, 0);
+        }
+
+        var result = new Uint8Array(totalLength);
+        var offset = 0;
+
+        for (var i = 0; i < list.length; i++) {
+            var buf = list[i];
+            result.set(buf, offset);
+            offset += buf.length;
+        }
+
+        return result;
+    };
+
     // Add methods to Uint8Array prototype
     if (!Uint8Array.prototype.toString) {
         Uint8Array.prototype.toString = function(encoding) {
@@ -100,6 +123,12 @@
                 default:
                     throw new Error('Unsupported encoding: ' + encoding);
             }
+        };
+    }
+
+    if (!Uint8Array.prototype.slice) {
+        Uint8Array.prototype.slice = function(start, end) {
+            return this.subarray(start, end);
         };
     }
 

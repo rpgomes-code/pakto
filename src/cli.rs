@@ -90,7 +90,7 @@ pub enum Commands {
     },
 }
 
-#[derive(Clone, ValueEnum)]
+#[derive(Clone, ValueEnum, Debug, PartialEq)]
 pub enum EsTarget {
     #[value(name = "es5")]
     Es5,
@@ -106,7 +106,7 @@ pub enum EsTarget {
     EsNext,
 }
 
-#[derive(Clone, ValueEnum)]
+#[derive(Clone, ValueEnum, Debug, PartialEq)]
 pub enum BundleStrategy {
     /// Include all dependencies inline
     #[value(name = "inline")]
@@ -125,16 +125,15 @@ pub enum BundleStrategy {
     Hybrid,
 }
 
-impl From<EsTarget> for swc_ecma_ast::EsVersion {
-    fn from(target: EsTarget) -> Self {
-        match target {
-            EsTarget::Es5 => swc_ecma_ast::EsVersion::Es5,
-            EsTarget::Es2015 => swc_ecma_ast::EsVersion::Es2015,
-            EsTarget::Es2017 => swc_ecma_ast::EsVersion::Es2017,
-            EsTarget::Es2018 => swc_ecma_ast::EsVersion::Es2018,
-            EsTarget::Es2020 => swc_ecma_ast::EsVersion::Es2020,
-            EsTarget::EsNext => swc_ecma_ast::EsVersion::EsNext,
-        }
+impl Default for EsTarget {
+    fn default() -> Self {
+        Self::Es5
+    }
+}
+
+impl Default for BundleStrategy {
+    fn default() -> Self {
+        Self::Inline
     }
 }
 
@@ -152,5 +151,11 @@ mod tests {
     #[test]
     fn verify_cli() {
         Cli::command().debug_assert()
+    }
+
+    #[test]
+    fn test_default_values() {
+        assert_eq!(EsTarget::default(), EsTarget::Es5);
+        assert_eq!(BundleStrategy::default(), BundleStrategy::Inline);
     }
 }

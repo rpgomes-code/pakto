@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 use thiserror::Error;
+use serde::{Serialize, Deserialize};
 
 /// Main error type for Pakto
 #[derive(Error, Debug)]
@@ -110,7 +111,7 @@ pub enum PaktoError {
 }
 
 /// Represents a location in source code
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CodeLocation {
     pub file: PathBuf,
     pub line: Option<usize>,
@@ -118,7 +119,7 @@ pub struct CodeLocation {
 }
 
 /// Compatibility issues found during analysis
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CompatibilityIssue {
     pub level: IssueLevel,
     pub message: String,
@@ -127,7 +128,7 @@ pub struct CompatibilityIssue {
     pub api: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum IssueLevel {
     Error,
     Warning,
@@ -138,14 +139,14 @@ pub enum IssueLevel {
 pub type Result<T> = std::result::Result<T, PaktoError>;
 
 /// Warning that doesn't stop conversion but should be reported
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Warning {
     pub message: String,
     pub location: Option<CodeLocation>,
     pub category: WarningCategory,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum WarningCategory {
     Performance,
     Compatibility,
@@ -282,6 +283,16 @@ impl From<serde_json::Error> for PaktoError {
     fn from(err: serde_json::Error) -> Self {
         Self::ParseError {
             file: PathBuf::from("unknown"),
+            message: err.to_string(),
+            source: Some(Box::new(err)),
+        }
+    }
+}
+
+impl From<regex::Error> for PaktoError {
+    fn from(err: regex::Error) -> Self {
+        Self::ParseError {
+            file: PathBuf::from("regex"),
             message: err.to_string(),
             source: Some(Box::new(err)),
         }

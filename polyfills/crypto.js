@@ -77,10 +77,54 @@
         return bytes;
     }
 
+    function pbkdf2(password, salt, iterations, keylen, digest, callback) {
+        if (typeof digest === 'function') {
+            callback = digest;
+            digest = 'sha1';
+        }
+
+        var algo = 'PBKDF2';
+        var hash = digest.toUpperCase().replace(/^SHA/, 'SHA-');
+
+        if (typeof password === 'string') {
+            password = new TextEncoder().encode(password);
+        }
+        if (typeof salt === 'string') {
+            salt = new TextEncoder().encode(salt);
+        }
+
+        crypto.subtle.importKey(
+            'raw',
+            password,
+            { name: algo },
+            false,
+            ['deriveBits']
+        ).then(function(key) {
+            return crypto.subtle.deriveBits(
+                {
+                    name: algo,
+                    salt: salt,
+                    iterations: iterations,
+                    hash: hash
+                },
+                key,
+                keylen * 8
+            );
+        }).then(function(bits) {
+            var result = new Uint8Array(bits);
+            if (callback) callback(null, result);
+            return result;
+        }).catch(function(err) {
+            if (callback) callback(err);
+            throw err;
+        });
+    }
+
     // Export polyfill
     window.cryptoPolyfill = {
         createHash: createHash,
-        randomBytes: randomBytes
+        randomBytes: randomBytes,
+        pbkdf2: pbkdf2
     };
 
 })();

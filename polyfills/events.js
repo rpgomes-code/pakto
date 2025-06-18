@@ -104,6 +104,31 @@
         return this._maxListeners;
     };
 
+    EventEmitter.prototype.eventNames = function() {
+        return Object.keys(this._events);
+    };
+
+    EventEmitter.prototype.prependListener = function(event, listener) {
+        if (!this._events[event]) {
+            this._events[event] = [];
+        }
+
+        this._events[event].unshift(listener);
+        return this;
+    };
+
+    EventEmitter.prototype.prependOnceListener = function(event, listener) {
+        var self = this;
+
+        function onceWrapper() {
+            self.removeListener(event, onceWrapper);
+            listener.apply(this, arguments);
+        }
+
+        this.prependListener(event, onceWrapper);
+        return this;
+    };
+
     // Export polyfill
     window.EventEmitterPolyfill = EventEmitter;
 
